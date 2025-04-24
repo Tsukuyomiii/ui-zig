@@ -3,21 +3,32 @@
 //! is to delete this file and start with root.zig instead.
 
 const std = @import("std");
-std.heap.DebugAllocator()
 const raylib = @import("raylib");
 
 pub fn main() !void {
     raylib.initWindow(800, 600, "UI");
     raylib.setTargetFPS(144);
 
-    {
-        var path = try std.fs.path.resolve()
-    }
+    const Box = struct {
+        const Self = @This();
+        x: i32,
+        y: i32,
+        width: i32,
+        height: i32,
+        pub fn draw(self: Self) void {
+            raylib.drawRectangle(self.x, self.y, self.height, self.width, raylib.Color.blue);
+        }
+    };
+
+    var box = .{ .thing = "yeah", .other = fn (
+        self: @This(),
+    ) void{std.debug.print("deadass?")} };
 
     while (!raylib.windowShouldClose()) {
         raylib.beginDrawing();
         raylib.clearBackground(raylib.Color.dark_gray);
         raylib.drawFPS(0, 0);
+        box.draw(box);
         raylib.endDrawing();
     }
 }

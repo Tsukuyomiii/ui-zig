@@ -1,34 +1,53 @@
-//! By convention, main.zig is where your main function lives in the case that
-//! you are building an executable. If you are making a library, the convention
-//! is to delete this file and start with root.zig instead.
-
 const std = @import("std");
 const raylib = @import("raylib");
+
+const Box = struct {
+    x: i32,
+    y: i32,
+    width:  i32,
+    height: i32,
+    pub fn draw(self: @This()) void {
+        raylib.drawRectangle(self.x, self.y, self.height, self.width, raylib.Color.blue);
+    }
+};
+
+const Element = union(enum) {
+    box: Box,
+};
+
+
 
 pub fn main() !void {
     raylib.initWindow(800, 600, "UI");
     raylib.setTargetFPS(144);
 
-    const Box = struct {
-        const Self = @This();
-        x: i32,
-        y: i32,
-        width: i32,
-        height: i32,
-        pub fn draw(self: Self) void {
-            raylib.drawRectangle(self.x, self.y, self.height, self.width, raylib.Color.blue);
-        }
+    const box = Box { 
+        .x = 0,
+        .y = 0,
+        .width  = 100,
+        .height = 100,
     };
 
-    var box = .{ .thing = "yeah", .other = fn (
-        self: @This(),
-    ) void{std.debug.print("deadass?")} };
+    const elements = [_]Element{
+        Element{.box = box}
+    };
+
+    if (raylib.isMouseButtonDown(.left)) {
+        const mx = raylib.getMouseX();
+        const my = raylib.getMouseY();
+        if (mx >= box.x and mx <= (box.x + box.width) and my >= box.y and my <= (box.y + box.height)) {
+
+        }
+    }
+    
 
     while (!raylib.windowShouldClose()) {
         raylib.beginDrawing();
         raylib.clearBackground(raylib.Color.dark_gray);
         raylib.drawFPS(0, 0);
-        box.draw(box);
+        for (elements) |element| {
+            element.draw();
+        }
         raylib.endDrawing();
     }
 }

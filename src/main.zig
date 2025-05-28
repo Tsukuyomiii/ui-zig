@@ -9,8 +9,7 @@ pub fn main() !void {
 
     var allocator = std.heap.GeneralPurposeAllocator(.{}).init;
     const context = try Context.init(allocator.allocator());
-
-    
+  
 
     // const fira = try raylib.loadFont("FiraCode-Regular.ttf");
 

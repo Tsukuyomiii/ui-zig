@@ -7,9 +7,9 @@ const Element = @import("Element.zig");
 pub fn main() !void {
     raylib.initWindow(800, 600, "THING");
 
-    var allocator = std.heap.GeneralPurposeAllocator(.{}).init;
-    const context = try Context.init(allocator.allocator());
+    const context = try Context.init();
   
+    
 
     // const fira = try raylib.loadFont("FiraCode-Regular.ttf");
 

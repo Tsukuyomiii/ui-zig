@@ -4,29 +4,36 @@ const std = @import("std");
 
 pub const Handle = struct {
     id: u8,
-    pub fn element(self: Handle, context: *Context) !*Element {
+    // pub fn element(self: Handle, context: *Context) !*Element {
         
-    }
+    // }
 };
 
 context:  *Context,
-parent:   ?u8, // id, null if root
-id:       u8 = std.Random.int(@FieldType(Element, "id")),
+parent:   ?Handle, // id, null if root
+id:       u8,
 x:        i32,
 y:        i32,
 width:    i32,
 height:   i32,
 
-pub fn init(context: *Context, parent: ?Handle, x: i32, y: i32, width: i32, height: i32) Handle {
+pub fn init(
+        context: *Context, 
+        parent:  ?Handle, 
+        x:     i32, y:      i32, 
+        width: i32, height: i32
+    ) Handle {
     const element = Element {
         .context = context, 
+        .id      = std.crypto.random.int(u8),
         .parent  = parent,
         .x       = x,
         .y       = y,
         .width   = width,
         .height  = height,
     };
-    context.elements.create
+    const e = context.elements.create();
+    e.* = element;
     return Handle { .id = element.id };
 }
 

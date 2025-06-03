@@ -54,39 +54,9 @@ pub fn main() !void {
     while (!raylib.windowShouldClose()) {
         context.update();
 
-        
         raylib.beginDrawing();
         defer raylib.endDrawing();
 
-        raylib.clearBackground(raylib.Color.dark_gray);
-
-        // {
-        //     var x: [10]u8 = undefined;
-        //     var y: [10]u8 = undefined;
-        //     var buf: [20]u8 = undefined;
-        //     const x_txt = std.fmt.bufPrintIntToSlice(&x, context.mouse_pos.x, 10, .lower, .{});
-        //     const y_txt = std.fmt.bufPrintIntToSlice(&y, context.mouse_pos.y, 10, .lower, .{});
-        //     var i: u32 = 0;
-        //     for (x_txt) |char| {
-        //         buf[i] = char;
-        //         i += 1;
-        //     }
-        //     buf[i] = ',';
-        //     i += 1;
-        //     buf[i] = ' ';
-        //     i += 1;
-        //     for (y_txt) |char| {
-        //         buf[i] = char;
-        //         i += 1;
-        //     }
-        //     buf[i] = '\x00';
-
-        //     // @breakpoint();
-
-        //     raylib.drawText(@ptrCast(buf[0..]), 10, 10, 16, raylib.Color.white);
-        // }
-
-
-        
+        raylib.clearBackground(raylib.Color.dark_gray);    
     }
 }

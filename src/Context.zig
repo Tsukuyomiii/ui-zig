@@ -5,33 +5,21 @@ const std = @import("std");
 const raylib = @import("raylib");
 
 gpa: std.heap.GeneralPurposeAllocator(.{}),
-elements: struct {
-    list: [20]?Element,
-    pool: std.heap.MemoryPoolExtra(Element, .{ .alignment = std.mem.Alignment.of(Element), .growable = true }),
-},
+elements: std.ArrayList(Element),
 show_box_debug: bool = false,
 mouse_pos: struct {
-    x: i32 = 0,
-    y: i32 = 0,
+    x: i32,
+    y: i32,
 } = .{},
 pub fn init() !*Context {
     var gpa = std.heap.GeneralPurposeAllocator(.{}).init;
     const context = try gpa.allocator().create(Context);
     context.* = .{ 
         .gpa      = gpa,
-        .elements = .{
-            .list = [20] // just use arraylist
-            .pool = std.heap.MemoryPoolExtra(
-                Element, 
-                .{ 
-                    .alignment = std.mem.Alignment.of(Element), 
-                    .growable = true 
-                },
-            ).init(gpa.allocator()),
-        }
+        .elements = std.ArrayList(Element).init(gpa.allocator()),
     };
-    const root = try context.elements.create();
-    root.* = Element {
+    // create root element
+    try context.elements.append(.{
         .context = context,
         .id      = 0,
         .parent  = null,
@@ -39,7 +27,7 @@ pub fn init() !*Context {
         .width   = raylib.getScreenWidth(),
         .x       = 0,
         .y       = 0,
-    };
+    });
     return context;
 }
 

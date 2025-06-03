@@ -23,7 +23,7 @@ pub fn init(
         x:     i32, y:      i32, 
         width: i32, height: i32
     ) Handle {
-    const element = Element {
+    const element = try context.elements.append(.{
         .context = context, 
         .id      = std.crypto.random.int(u8),
         .parent  = parent,
@@ -31,9 +31,7 @@ pub fn init(
         .y       = y,
         .width   = width,
         .height  = height,
-    };
-    const e = context.elements.create();
-    e.* = element;
+    });
     return Handle { .id = element.id };
 }
 

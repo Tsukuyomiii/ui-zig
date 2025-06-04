@@ -1,6 +1,7 @@
 const std = @import("std");
 const raylib = @import("raylib");
 
+
 const Context = @import("Context.zig");
 const Element = @import("Element.zig");
 
@@ -9,11 +10,21 @@ fn draw_box(e: Element) void {
 }
 
 fn draw_framed_box(x: i32, y: i32, width: i32, height: i32, border_color: raylib.Color, background_color: raylib.Color) void {
-
+    raylib.drawRectangle(x, y, width, height, background_color);
+    raylib.drawRectangleLinesEx(
+        .{
+            .x      = @floatFromInt(x),
+            .y      = @floatFromInt(y),
+            .height = @floatFromInt(height),
+            .width  = @floatFromInt(width)
+        },
+        5,
+        border_color
+    );
 }
 
 fn draw_fps_box(e: Element) void {
-    raylib.drawRectangle(e.x, e.y, e.width, e.height, raylib.Color.red);
+    draw_framed_box(e.x, e.y, e.width, e.height, raylib.Color.light_gray, raylib.Color.black);
     raylib.drawFPS(e.x + @divExact(e.width, 2), e.y + @divExact(e.height, 2));
 }
 

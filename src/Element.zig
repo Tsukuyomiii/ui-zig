@@ -2,11 +2,16 @@ const Element = @This();
 const Context = @import("Context.zig");
 const std = @import("std");
 
+const DrawFn = *const fn (Element) void;
+
 pub const Handle = struct {
+    const Error = error {
+        NoMatchingId,
+    };
     id: u8,
-    pub fn element(self: Handle, context: *Context) !*Element {
-        for (context.elements.items) |ele| {
-            if (ele.id == self.id) return &element;
+    pub fn element(self: Handle, context: *Context) Error!*Element {
+        for (context.elements.items, 0..) |ele, i| {
+            if (ele.id == self.id) return &context.elements.items[i];
         }
         return error.NoMatchingId;
     }
@@ -19,14 +24,16 @@ x:        i32,
 y:        i32,
 width:    i32,
 height:   i32,
+draw_fn:  DrawFn,
 
 pub fn init(
         context: *Context, 
         parent:  ?Handle, 
         x:     i32, y:      i32, 
-        width: i32, height: i32
-    ) Handle {
-    const element = try context.elements.append(.{
+        width: i32, height: i32,
+        draw_fn:  DrawFn
+    ) !Handle {
+    try context.elements.append(.{
         .context = context, 
         .id      = std.crypto.random.int(u8),
         .parent  = parent,
@@ -34,7 +41,10 @@ pub fn init(
         .y       = y,
         .width   = width,
         .height  = height,
+        .draw_fn = draw_fn,
     });
+    const items = context.elements.items;
+    const element = items[items.len - 1];
     return Handle { .id = element.id };
 }
 

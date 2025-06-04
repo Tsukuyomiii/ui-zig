@@ -4,64 +4,41 @@ const raylib = @import("raylib");
 const Context = @import("Context.zig");
 const Element = @import("Element.zig");
 
+fn draw_box(e: Element) void {
+    raylib.drawRectangle(e.x, e.y, e.width, e.height, raylib.Color.red);
+}
+
+fn draw_framed_box(x: i32, y: i32, width: i32, height: i32, border_color: raylib.Color, background_color: raylib.Color) void {
+
+}
+
+fn draw_fps_box(e: Element) void {
+    raylib.drawRectangle(e.x, e.y, e.width, e.height, raylib.Color.red);
+    raylib.drawFPS(e.x + @divExact(e.width, 2), e.y + @divExact(e.height, 2));
+}
+
 pub fn main() !void {
     raylib.initWindow(800, 600, "THING");
 
-    const context = try Context.init();
+    var context = try Context.init();
   
-    const root_handle = Element.Handle {
-        .id = 0,
-    };
+    const root_handle = Element.Handle { .id = 0, };
 
-    const root = root_handle.element(context);
+    _ = try Element.init(context, root_handle, 10, 10, 100, 100, draw_box);
 
-    std.debug.print("{}", root);
+    _ = try Element.init(context, root_handle, 100, 100, 100, 50, draw_fps_box);
 
-    // const fira = try raylib.loadFont("FiraCode-Regular.ttf");
+    std.debug.print("{}", .{context.*});
 
-    // var show_box_debug: bool = false;
-
-    // const TextBox = struct {
-    //     deco: struct {
-    //         font: raylib.Font,
-    //         border_color: raylib.Color = raylib.Color.white,
-    //     },
-    //     frame: struct {
-    //         x: i32,
-    //         y: i32,
-    //         width: i32,
-    //         height: i32,
-    //         pub fn tup(self: @This()) struct { i32, i32, i32, i32 } {
-    //             return .{ self.x, self.y, self.width, self.height };
-    //         }
-    //     },
-    //     text: []const u8,
-    //     pub fn draw(self: @This()) void {
-    //         raylib.drawRectangleLines(self.frame.x, self.frame.y, self.frame.width, self.frame.height, self.deco.border_color);
-    //         const tx = self.frame.x + 5;
-    //         const ty = self.frame.y + 5;
-    //         const text_sent: [:0]const u8 = @ptrCast(self.text);
-    //         const font = raylib.getFontDefault();
-    //         raylib.drawTextEx(font, text_sent, .{ .x = @floatFromInt(tx), .y = @floatFromInt(ty) }, 16, 1, raylib.Color.white);
-    //     }
-
-    //     pub fn is_hovered(self: @This(), mouse: struct { i32, i32 }) bool {
-    //         const x, const y, const height, const width = self.frame.tup();
-    //         const mx, const my = mouse;
-
-    //         if ((x < mx and mx < x + width) and (y < my and my < y + height)) {
-    //             return true;
-    //         }
-    //         return false;
-    //     }
-    // };
-
-    
     while (!raylib.windowShouldClose()) {
         context.update();
 
         raylib.beginDrawing();
         defer raylib.endDrawing();
+
+        for (context.elements.items) |element| {
+            element.draw_fn(element);
+        }
 
         raylib.clearBackground(raylib.Color.dark_gray);    
     }

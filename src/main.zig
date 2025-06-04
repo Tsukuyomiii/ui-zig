@@ -9,7 +9,13 @@ pub fn main() !void {
 
     const context = try Context.init();
   
-    
+    const root_handle = Element.Handle {
+        .id = 0,
+    };
+
+    const root = root_handle.element(context);
+
+    std.debug.print("{}", root);
 
     // const fira = try raylib.loadFont("FiraCode-Regular.ttf");
 

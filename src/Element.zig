@@ -4,9 +4,12 @@ const std = @import("std");
 
 pub const Handle = struct {
     id: u8,
-    // pub fn element(self: Handle, context: *Context) !*Element {
-        
-    // }
+    pub fn element(self: Handle, context: *Context) !*Element {
+        for (context.elements.items) |ele| {
+            if (ele.id == self.id) return &element;
+        }
+        return error.NoMatchingId;
+    }
 };
 
 context:  *Context,

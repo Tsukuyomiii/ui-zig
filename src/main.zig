@@ -9,23 +9,39 @@ fn draw_box(e: Element) void {
     raylib.drawRectangle(e.x, e.y, e.width, e.height, raylib.Color.red);
 }
 
-fn draw_framed_box(x: i32, y: i32, width: i32, height: i32, border_color: raylib.Color, background_color: raylib.Color) void {
-    raylib.drawRectangle(x, y, width, height, background_color);
+fn draw_framed_box(rect: raylib.Rectangle, border_color: raylib.Color, background_color: raylib.Color) void {
+    raylib.drawRectangleRec(rect, background_color);
     raylib.drawRectangleLinesEx(
-        .{
-            .x      = @floatFromInt(x),
-            .y      = @floatFromInt(y),
-            .height = @floatFromInt(height),
-            .width  = @floatFromInt(width)
-        },
+        rect,
         5,
         border_color
     );
 }
 
+const FrameOptions = struct {
+    color: raylib.Color,
+    thickness: i32, 
+};
+
+fn draw_frame(e: Element, opts: FrameOptions) void {
+    const background_rect = e.rect();
+    raylib.drawRectangleLinesEx(
+        background_rect,
+        @floatFromInt(opts.thickness),
+        opts.color
+    );
+    var top_bar = background_rect;
+    top_bar.height = 20;
+    raylib.drawRectangleRec(top_bar, opts.color);
+}
+
 fn draw_fps_box(e: Element) void {
-    draw_framed_box(e.x, e.y, e.width, e.height, raylib.Color.light_gray, raylib.Color.black);
+    draw_framed_box(e.rect(), raylib.Color.light_gray, raylib.Color.black);
     raylib.drawFPS(e.x + @divExact(e.width, 2), e.y + @divExact(e.height, 2));
+}
+
+fn test_draw(ele: Element) void {
+    draw_frame(ele, .{ .color = raylib.Color.black, .thickness = 4 });
 }
 
 pub fn main() !void {
@@ -37,7 +53,15 @@ pub fn main() !void {
 
     _ = try Element.init(context, root_handle, 10, 10, 100, 100, draw_box);
 
-    _ = try Element.init(context, root_handle, 100, 100, 100, 50, draw_fps_box);
+    _ = try Element.init(context, root_handle, 10, 100, 100, 50, draw_fps_box);
+
+    // _ = try Element.init(context, root_handle, 10, 200, 100, 100, struct { pub fn draw(ele: Element) void { 
+    //     draw_frame(ele, .{ .color = raylib.Color.black, .thickness = 8 });
+    // }}.draw);
+
+    
+
+    _ = try Element.init(context, root_handle, 10, 200, 250, 100, test_draw);
 
     std.debug.print("{}", .{context.*});
 

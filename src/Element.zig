@@ -1,6 +1,7 @@
 const Element = @This();
 const Context = @import("Context.zig");
 const std = @import("std");
+const raylib = @import("raylib");
 
 const DrawFn = *const fn (Element) void;
 
@@ -45,6 +46,16 @@ pub fn init(
     });
     const items = context.elements.items;
     const element = items[items.len - 1];
+    std.debug.print("# of items: {}", .{items.len});
     return Handle { .id = element.id };
+}
+
+pub fn rect(self: Element) raylib.Rectangle {
+    return .{
+        .x      = @floatFromInt(self.x),
+        .y      = @floatFromInt(self.y),
+        .height = @floatFromInt(self.height),
+        .width  = @floatFromInt(self.width)
+    };
 }
 

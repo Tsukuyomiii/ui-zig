@@ -12,7 +12,9 @@ pub const Font = struct {
     const fira_code = raylib.loadFont("FiraCode-Regular.ttf") catch @compileError("Couldn't load Fira Code!");
 };
 
-gpa: std.heap.GeneralPurposeAllocator(.{}),
+const ContextAllocator = std.heap.GeneralPurposeAllocator(.{ .verbose_log = true });
+
+gpa: ContextAllocator,
 elements: std.ArrayList(Element),
 show_box_debug: bool = false,
 mouse_pos: struct {
@@ -23,11 +25,12 @@ mouse_pos: struct {
 fn root_draw(_: Element) void {}
 
 pub fn init() !*Context {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}).init;
+    var gpa = ContextAllocator.init;
     const context = try gpa.allocator().create(Context);
     context.* = .{ 
         .gpa      = gpa,
-        .elements = std.ArrayList(Element).init(gpa.allocator()),
+        // Element.init() segfaulting after a few calls without this preallocation
+        .elements = try std.ArrayList(Element).initCapacity(gpa.allocator(), 40),
     };
     // create root element
     try context.elements.append(.{

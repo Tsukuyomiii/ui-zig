@@ -6,11 +6,11 @@ const raylib = @import("raylib");
 const DrawFn = *const fn (Element) void;
 
 pub const Handle = struct {
-    const Error = error {
-        NoMatchingId,
-    };
+    // const Error = error {
+    //     NoMatchingId,
+    // };
     id: u8,
-    pub fn element(self: Handle, context: *Context) Error!*Element {
+    pub fn element(self: Handle, context: *Context) .NoMatchingId!*Element {
         for (context.elements.items, 0..) |ele, i| {
             if (ele.id == self.id) return &context.elements.items[i];
         }

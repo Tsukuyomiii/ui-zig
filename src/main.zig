@@ -9,7 +9,11 @@ fn draw_box(e: Element) void {
     raylib.drawRectangle(e.x, e.y, e.width, e.height, raylib.Color.red);
 }
 
-fn draw_framed_box(rect: raylib.Rectangle, border_color: raylib.Color, background_color: raylib.Color) void {
+fn draw_framed_box(
+    rect: raylib.Rectangle, 
+    border_color: raylib.Color, 
+    background_color: raylib.Color
+) void {
     raylib.drawRectangleRec(rect, background_color);
     raylib.drawRectangleLinesEx(
         rect,
@@ -19,8 +23,9 @@ fn draw_framed_box(rect: raylib.Rectangle, border_color: raylib.Color, backgroun
 }
 
 const FrameOptions = struct {
-    color: raylib.Color,
-    thickness: i32, 
+    color: raylib.Color = raylib.Color.black,
+    title: ?[:0]const u8 = null,
+    thickness: i32 = 4, 
 };
 
 fn draw_frame(e: Element, opts: FrameOptions) void {
@@ -33,6 +38,9 @@ fn draw_frame(e: Element, opts: FrameOptions) void {
     var top_bar = background_rect;
     top_bar.height = 20;
     raylib.drawRectangleRec(top_bar, opts.color);
+    if (opts.title) |title| {
+        raylib.drawTextEx(raylib.getFontDefault() catch unreachable, title, .{ .x = @floatFromInt(e.x), .y = @floatFromInt(e.y) }, 14, 2, raylib.Color.white);
+    }
 }
 
 fn draw_fps_box(e: Element) void {
@@ -41,11 +49,13 @@ fn draw_fps_box(e: Element) void {
 }
 
 fn test_draw(ele: Element) void {
-    draw_frame(ele, .{ .color = raylib.Color.black, .thickness = 4 });
+    draw_frame(ele, .{ .color = raylib.Color.black, .thickness = 4, .title = "Test" });
 }
 
 pub fn main() !void {
     raylib.initWindow(800, 600, "THING");
+
+    std.debug.print("Element size: {}\n", .{ @sizeOf(Element) });
 
     var context = try Context.init();
   
@@ -58,8 +68,6 @@ pub fn main() !void {
     // _ = try Element.init(context, root_handle, 10, 200, 100, 100, struct { pub fn draw(ele: Element) void { 
     //     draw_frame(ele, .{ .color = raylib.Color.black, .thickness = 8 });
     // }}.draw);
-
-    
 
     _ = try Element.init(context, root_handle, 10, 200, 250, 100, test_draw);
 

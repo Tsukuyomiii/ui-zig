@@ -13,8 +13,9 @@ pub const Font = struct {
 };
 
 const ContextAllocator = std.heap.GeneralPurposeAllocator(.{ .verbose_log = true });
-
+const FontMap = std.AutoHashMap(*const []u8, raylib.Font);
 gpa: ContextAllocator,
+fonts: FontMap,
 elements: std.ArrayList(Element),
 show_box_debug: bool = false,
 mouse_pos: struct {
@@ -29,8 +30,8 @@ pub fn init() !*Context {
     const context = try gpa.allocator().create(Context);
     context.* = .{ 
         .gpa      = gpa,
-        // Element.init() segfaulting after a few calls without this preallocation
-        .elements = try std.ArrayList(Element).initCapacity(gpa.allocator(), 40),
+        .fonts    = FontMap.init(context.gpa.allocator()),
+        .elements = std.ArrayList(Element).init(context.gpa.allocator()),
     };
     // create root element
     try context.elements.append(.{
@@ -53,6 +54,7 @@ pub fn update(self: *Context) void {
         .y = raylib.getMouseY(),
     };
     if (raylib.isWindowResized()) {
-        
+        self.elements.items[0].height = raylib.getScreenHeight();
+        self.elements.items[0].width  = raylib.getScreenWidth();
     }
 }

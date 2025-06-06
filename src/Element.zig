@@ -46,11 +46,12 @@ pub fn init(
     });
     const items = context.elements.items;
     const element = items[items.len - 1];
-    std.debug.print("# of items: {}", .{items.len});
+    std.debug.print("# of items: {}\n", .{items.len});
     return Handle { .id = element.id };
 }
 
 pub fn rect(self: Element) raylib.Rectangle {
+    // TODO(optimize) look into conversion costs
     return .{
         .x      = @floatFromInt(self.x),
         .y      = @floatFromInt(self.y),

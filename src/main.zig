@@ -35,12 +35,33 @@ fn draw_frame(e: Element, opts: FrameOptions) void {
         @floatFromInt(opts.thickness),
         opts.color
     );
+
     var top_bar = background_rect;
     top_bar.height = 20;
     raylib.drawRectangleRec(top_bar, opts.color);
     if (opts.title) |title| {
-        raylib.drawTextEx(raylib.getFontDefault() catch unreachable, title, .{ .x = @floatFromInt(e.x), .y = @floatFromInt(e.y) }, 14, 2, raylib.Color.white);
+        raylib.drawTextEx(
+            raylib.getFontDefault() catch unreachable, 
+            title, 
+            .{ 
+                .x = @floatFromInt(e.x + 3), 
+                .y = @floatFromInt(e.y + 3) 
+            }, 
+            14, 
+            2, 
+            raylib.Color.white
+        );
     }
+
+    var drag_handle_rect: raylib.Rectangle = undefined;
+    drag_handle_rect.height = 10;
+    drag_handle_rect.width  = 10;
+    const x_spacing: f32 = 3;
+    const y_spacing: f32 = 3;
+    drag_handle_rect.x = (background_rect.x + background_rect.width) - drag_handle_rect.width - x_spacing;
+    drag_handle_rect.y = background_rect.y + y_spacing;
+    raylib.drawLineV(.{ .x = drag_handle_rect.x, .y = drag_handle_rect.y }, .{ .x = drag_handle_rect.x + drag_handle_rect.width, .y = drag_handle_rect.y}, raylib.Color.white);
+    raylib.drawLineV(.{ .x = drag_handle_rect.x + drag_handle_rect.width, .y = drag_handle_rect.y}, .{ .x = drag_handle_rect.x + drag_handle_rect.width, .y = drag_handle_rect.y + drag_handle_rect.height}, raylib.Color.white);
 }
 
 fn draw_fps_box(e: Element) void {
@@ -54,6 +75,7 @@ fn test_draw(ele: Element) void {
 
 pub fn main() !void {
     raylib.initWindow(800, 600, "THING");
+    raylib.setWindowState(.{ .window_resizable = true });
 
     std.debug.print("Element size: {}\n", .{ @sizeOf(Element) });
 
@@ -71,7 +93,7 @@ pub fn main() !void {
 
     _ = try Element.init(context, root_handle, 10, 200, 250, 100, test_draw);
 
-    std.debug.print("{}", .{context.*});
+    // std.debug.print("{}\n", .{context.*});
 
     while (!raylib.windowShouldClose()) {
         context.update();

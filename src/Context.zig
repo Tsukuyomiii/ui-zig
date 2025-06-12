@@ -31,7 +31,6 @@ pub fn init() !*Context {
     context.* = .{
         .mouse    = .{
             .pos   = .{ .x = 0, .y = 0 },
-            .state = .{ .hovering = .{} }
         },
         .gpa      = gpa,
         .fonts    = FontMap.init(context.gpa.allocator()),
@@ -58,12 +57,6 @@ pub fn update(self: *Context) void {
         .x = raylib.getMouseX(),
         .y = raylib.getMouseY(),
     };
-
-    {
-        const x = self.mouse.pos.x;
-        const y = self.mouse.pos.y;
-        
-    }
     
     if (raylib.isWindowResized()) {
         self.elements.items[0].height = raylib.getScreenHeight();

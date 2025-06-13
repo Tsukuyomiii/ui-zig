@@ -3,12 +3,10 @@ const Context = @import("Context.zig");
 const std = @import("std");
 const raylib = @import("raylib");
 
-const DrawFn = *const fn (Element) void;
+const DrawFn   = *const fn (*Context, Element) void;
+const UpdateFn = *const fn (*Context, Element) void;
 
 pub const Handle = struct {
-    // const Error = error {
-    //     NoMatchingId,
-    // };
     id: u8,
     pub fn element(self: Handle, context: *Context) .NoMatchingId!*Element {
         for (context.elements.items, 0..) |ele, i| {
@@ -22,10 +20,11 @@ context:  *Context,
 parent:   ?Handle, // id, null if root
 id:       u8,
 x:        i32,
-y:        i32,
-width:    i32,
-height:   i32,
-draw_fn:  DrawFn,
+y:         i32,
+width:     i32,
+height:    i32,
+draw_fn:   DrawFn,
+update_fn: UpdateFn,
 
 pub fn init(
         context: *Context, 
@@ -46,12 +45,11 @@ pub fn init(
     });
     const items = context.elements.items;
     const element = items[items.len - 1];
-    std.debug.print("# of items: {}\n", .{items.len});
     return Handle { .id = element.id };
 }
 
 pub fn rect(self: Element) raylib.Rectangle {
-    // TODO(optimize) look into conversion costs
+    // TODO(optimize) look into conversion costs - allegedly fp is no longer a perf bottleneck
     return .{
         .x      = @floatFromInt(self.x),
         .y      = @floatFromInt(self.y),

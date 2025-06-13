@@ -1,7 +1,6 @@
 const std = @import("std");
 const raylib = @import("raylib");
 
-
 const Context = @import("Context.zig");
 const Element = @import("Element.zig");
 
@@ -73,6 +72,8 @@ fn test_draw(ele: Element) void {
     draw_frame(ele, .{ .color = raylib.Color.black, .thickness = 4, .title = "Test" });
 }
 
+
+
 pub fn main() !void {
     raylib.initWindow(800, 600, "THING");
     raylib.setWindowState(.{ .window_resizable = true });
@@ -82,16 +83,7 @@ pub fn main() !void {
     var context = try Context.init();
   
     const root_handle = Element.Handle { .id = 0, };
-
-    _ = try Element.init(context, root_handle, 10, 10, 100, 100, draw_box);
-
-    _ = try Element.init(context, root_handle, 10, 100, 100, 50, draw_fps_box);
-
-    // _ = try Element.init(context, root_handle, 10, 200, 100, 100, struct { pub fn draw(ele: Element) void { 
-    //     draw_frame(ele, .{ .color = raylib.Color.black, .thickness = 8 });
-    // }}.draw);
-
-    _ = try Element.init(context, root_handle, 10, 200, 250, 100, test_draw);
+    _ = root_handle;
 
     // std.debug.print("{}\n", .{context.*});
 

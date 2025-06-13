@@ -55,12 +55,6 @@ pub fn update(self: *Context) void {
         .x = raylib.getMouseX(),
         .y = raylib.getMouseY(),
     };
-
-    // {
-    //     const x = self.mouse.pos.x;
-    //     const y = self.mouse.pos.y;
-        
-    // }
     
     if (raylib.isWindowResized()) {
         self.elements.items[0].height = raylib.getScreenHeight();
